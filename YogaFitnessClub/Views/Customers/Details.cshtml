@@ -1,0 +1,28 @@
+﻿@model YogaFitnessClub.Models.Customer
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1></h1>
+<table class="table table-bordered table-hover" >
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>DOB</th>
+        <th>Address</th>
+        <th>Postcode</th>
+        <th>Email</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <th>@Model.Name</th>
+        <th>@Model.Birthdate.Value.ToShortDateString()</th>
+        <th>@Model.Address</th>
+        <th>@Model.Postcode</th>
+        <th>@Model.Email</th>
+    </tr>
+    </tbody>
+</table>
+

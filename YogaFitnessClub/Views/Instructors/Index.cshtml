@@ -1,0 +1,15 @@
+﻿@model YogaFitnessClub.Models.Instructor
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Instructor Dashboard</h2>
+
+<h2>
+    @*Hard coded customer id*@
+    @Html.ActionLink("View Personal Details", "Details", "Instructors", new { id = 1 }, new { @class = "btn btn-info" })
+    @Html.ActionLink("Edit Personal Details", "Edit", "Instructors", new { id = 1 }, new { @class = "btn btn-info" })
+    @Html.ActionLink("Plan New Sessions", "SessionForm", "Sessions", null, new { @class = "btn btn-info" })
+    @Html.ActionLink("View Sessions Booked", "GetSessionList", "Instructor", new { @class = "btn btn-info" })
+</h2>

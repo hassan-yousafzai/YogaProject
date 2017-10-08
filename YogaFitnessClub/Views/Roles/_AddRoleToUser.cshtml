@@ -1,0 +1,20 @@
+﻿<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h4>Add a Role to a User</h4>
+    </div>
+    <div class="panel-body">
+        @using (Html.BeginForm("RoleAddToUser", "Roles"))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+
+            <label>User Names:</label>
+            @Html.DropDownList("AddUserNameToUser", (IEnumerable<SelectListItem>)ViewBag.Users, "Select ...", new { @class = "form-control" })
+            <label>Role Names:</label>
+            @Html.DropDownList("AddRoleNameToUser", (IEnumerable<SelectListItem>)ViewBag.Roles, "Select ...", new { @class = "form-control" })
+            <br />
+            <button type="submit" class="btn btn-primary text-uppercase">Save</button>
+            @ViewBag.RoleAddToUserMessage
+        }
+    </div> <!-- End Panel Body-->
+</div> <!-- End Panel -->

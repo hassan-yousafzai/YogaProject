@@ -1,0 +1,42 @@
+﻿@model YogaFitnessClub.ViewModels.SessionFormViewModel
+
+@{
+    ViewBag.Title = "SessionForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Book Session</h2>
+
+@using (Html.BeginForm("Save", "Sessions", FormMethod.Post))
+{
+    @Html.LabelFor(s => s.Sessions.Date)
+    <div class="form-group">
+        @Html.EditorFor(s => s.Sessions.Date, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(s => s.Sessions.Time)
+        @Html.TextBoxFor(s => s.Sessions.Time, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Sessions.ActivityId)
+        @Html.DropDownListFor(m => m.Sessions.ActivityId, new SelectList(Model.Activities, "Id", "Name"), "Choose Activity", new { @class = "form-control" })
+    </div>
+
+
+    <div class="form-group">
+        @Html.LabelFor(s => s.Sessions.InstructorName)
+        @Html.TextBoxFor(s => s.Sessions.InstructorName, new { @class = "form-control" })
+    </div>
+@*
+    <div class="form-group">
+        @Html.LabelFor(s => s.Session.AvailableSpaces)
+        @Html.TextBoxFor(s => s.Session.AvailableSpaces, new { @class = "form-control" })
+    </div>
+*@
+    @Html.HiddenFor(m => m.Sessions.Id) 
+    <button type="submit" class="btn btn-primary">Submit</button>
+}
+ 
+ 

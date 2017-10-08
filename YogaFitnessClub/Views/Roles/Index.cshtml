@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewBag.Title = "ManageUserRoles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row col-sm-12 col-lg-12 col-md-12">
+    <h1>Role Manager</h1>
+</div>
+
+
+<div class="row col-sm-12 col-lg-12 col-md-12">
+  
+    @* First column *@
+    <div class="col-sm-6 col-lg-6 col-md-6">
+       @Html.Partial("_RolesList")
+       @Html.Partial("_CreateANewRole")
+      
+    </div> <!--End Of first column-->
+
+    @* Second column *@
+    <div class="col-sm-6 col-lg-6 col-md-6"> 
+       @Html.Partial("_AddRoleToUser")
+       @Html.Partial("_ListOfRolesForAUser")
+       @Html.Partial("_RemoveRoleFromAUser")
+    </div> <!--End of second column-->
+
+</div>  <!--Overall Page Wrapper-->
+<div class="clearfix"></div>
+
+
