@@ -1,0 +1,87 @@
+﻿@model IEnumerable<YogaFitnessClub.ViewModels.ClassSessionViewModel>
+@{
+    ViewBag.Title = "Available Bookings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Available Bookings</h2>
+
+@* Error messages for user *@
+<div class="form-group">
+    <span style="color:red">@ViewData["Message"]</span>
+</div>
+
+<hr />
+
+<p style="text-align:center">Use the search field and table sorting buttons to find your ideal booking. </p>
+@* Table to show the bookings in it, a for loop is used to populate the table *@
+<table id="events" class="table table-bordered table-hover table-responsive">
+    <thead>
+        <tr>
+            <th class="first_table_col" scope="col">Tutor</th>
+            <th scope="col">Title</th>
+            <th scope="col">Start</th>
+            <th scope="col">End</th>
+            <th scope="col">Price</th>
+            <th scope="col">Location</th>
+            <th scope="col">Activities</th>
+            <th scope="col">Difficulty</th>
+            <th scope="col">Spaces Left</th>
+            <th class="last_table_col" scope="col">Book</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var evt in Model)
+            {
+                <tr>
+                    <td>@evt.Tutor.Name</td>
+                    <td>@evt.Title</td>
+                    <td>@evt.StartDate</td>
+                    <td>@evt.EndDate</td>
+                    <td>@evt.ClassType.Price</td>
+                    <td>
+                        @evt.Room.Branch.Address, @evt.Room.Branch.Postcode<br />
+                        Room: @evt.Room.RoomNumber
+                    </td>
+                    <td>
+                        @foreach (var skill in evt.ClassSkills)
+                        {
+                            <p>@skill.Skill.SkillName</p>
+                        }
+                    </td>
+                    <td>@evt.ClassType.ClassTypeName</td>
+                    <td>@evt.SpaceLeft</td>
+                    <td>
+                        @using (Html.BeginForm("ProcessBooking", "Bookings", new { id = evt.Id }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                        {
+                            <span onclick="return confirm('Are you sure to book?')">
+                                @if (evt.SpaceLeft > 0)
+                                {
+                                    <input type="submit" value="Book Now" class="btn btn-success btn-lg btn-block" />
+                                }
+                                else
+                                {
+                                    <input type="submit" disabled value="Sold Out" class="btn btn-danger btn-lg btn-block" />
+                                }
+                            </span>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#events").DataTable();
+        })
+    </script>
+
+}
+
+

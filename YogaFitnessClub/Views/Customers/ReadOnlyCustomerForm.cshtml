@@ -1,0 +1,47 @@
+﻿@model YogaFitnessClub.Models.Customer
+
+@{
+    ViewBag.Title = "Readonly Customer Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>My Profile</h2>
+<hr />
+@* A readonly Customer Form *@
+<div class="row">
+
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        @Html.LabelFor(c => c.Name)
+        @Html.TextBoxFor(c => c.Name, new { @class = "form-control", @readonly = "true" })
+    </div>
+    <span class="clearfix"></span>
+
+    @* date of birth is shwon without the time component *@
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        @Html.LabelFor(c => c.Birthdate)
+        @Html.TextBoxFor(c => c.Birthdate, "{0:d MMM yyyy}", new { @class = "form-control", @readonly = "true" })
+    </div>
+    <span class="clearfix"></span>
+
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        @Html.LabelFor(c => c.Email)
+        @Html.TextBoxFor(c => c.Email, new { @class = "form-control", @readonly = "true" })
+    </div>
+    <span class="clearfix"></span>
+
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        @Html.LabelFor(c => c.Address)
+        @Html.TextBoxFor(c => c.Address, new { @class = "form-control", @readonly = "true" })
+    </div>
+    <span class="clearfix"></span>
+
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        @Html.LabelFor(c => c.Postcode)
+        @Html.TextBoxFor(c => c.Postcode, new { @class = "form-control", @readonly = "true" })
+    </div>
+    <span class="clearfix"></span>
+
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.UserId)
+
+</div>

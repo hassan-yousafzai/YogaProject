@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - YFC</title>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
     @Styles.Render("~/Content/css")
     @Styles.Render("~/Content/jqueryui")
     @Scripts.Render("~/bundles/modernizr")
@@ -14,6 +15,7 @@
     <div class="container body-content">
         @RenderBody()
         <hr />
+
         <footer>
             <p>&copy; @DateTime.Now.Year - Yoga Fitness Club</p>
         </footer>
@@ -22,19 +24,6 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/jqueryui")
-
-
-    <script>
-        $(function () {
-
-            $(".jqueryui-marker-datepicker").datepicker({
-                dateFormat: "d MM yy",
-                changeYear: true,
-                yearRange: "1900:+nn",
-                changeMonth: true
-                });
-        });
-    </script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

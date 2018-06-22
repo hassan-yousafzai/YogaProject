@@ -1,0 +1,73 @@
+﻿@model YogaFitnessClub.Models.Customer
+@{
+    ViewBag.Title = "Book for Customer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Book an Event for a Customer</h2>
+<hr />
+
+<p>Use the search field in the dropdown list to easily select a customer. </p>
+<br />
+
+@* process the booking for a customer by a tutor  *@
+@using (Html.BeginForm("ProcessBookACustomer", "Bookings", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <div class="row">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:5px;">
+            <label>Select a Customer</label>
+            <select name="UserId" data-live-search="true" id="DDLCustomer" class="form-control selectpicker">
+                <option selected disabled value="">Please Select</option>
+            </select>
+        </div>
+        <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:5px;">
+            <input type="submit" id="btnSubmit" class="btn btn-success" value="Process Booking" />
+        </div>
+    </div>
+
+    <link href="~/Content/themes/bootstrap-select.css" rel="stylesheet" />
+}
+
+@section scripts
+{
+    <script src="~/Scripts/bootstrap-select.js"></script>
+
+    <script>
+        //when document is ready 
+        $(document).ready(function () {
+            //send an ajax request to Customers controller -> GetAllCustomers
+            //get all the customers and papulate the dropdown list
+            $.ajax({
+                type: "POST",
+                url: '/Customers/GetAllCustomers',
+                success: function (data) {
+                    $('#DDLCustomer').find('option:gt(0)').remove(); //remove all elements but the first one
+                    for (var i = 0; i < data.length; i++) {
+                        $("#DDLCustomer").append('<option  "' + data[i].Email +  '" + value="' + data[i].UserId + '">' + data[i].Email + '</option>');
+                    }
+                    $("#DDLCustomer").selectpicker("refresh");
+
+                },
+                error: function (error) {
+                    alert('Failed to get the customers!');
+                }
+            })
+
+            //when user clicks on the submit button 
+            //ensure that the customer dropdown list is not empty 
+            $("#btnSubmit").click(function () {
+                var selectedCustomerId = document.getElementById('DDLCustomer').value.trim();
+
+                if (selectedCustomerId == "") {
+                    alert("You need to select a customer");
+                    return false;
+                }
+            });
+        })
+    </script>
+
+}

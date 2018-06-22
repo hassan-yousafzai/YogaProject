@@ -1,0 +1,41 @@
+﻿@model YogaFitnessClub.Models.Skill
+
+@{
+    ViewBag.Title = "Skills Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Skills Form</h2>
+<hr />
+
+@* feedback for users *@
+<div class="form-group">
+    <span style="color:red">@ViewData["Message"]</span>
+</div>
+
+@* the form is sent the saveskills method of skills controller *@
+@using (Html.BeginForm("SaveSkill", "Skills", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <div class="row" style="margin-left: 10px;">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            @Html.LabelFor(s => s.SkillName)
+            @Html.TextBoxFor(s => s.SkillName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(s => s.SkillName)
+        </div>
+        <span class="clearfix"></span>
+
+        @* the id is sent as a hidden field *@
+        @Html.HiddenFor(s => s.Id)
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <input type="submit" id="btnSubmit" class="btn btn-success" value="Save Skill" />
+        </div>
+
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

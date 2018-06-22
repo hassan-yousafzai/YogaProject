@@ -4,18 +4,23 @@
 }
 
 <h2>Edit Role</h2>
-
-@Html.ActionLink("Go Back to Role Manager", "Index", null, new { @class = "btn btn-info" })
-
+<hr />
+@* Role edit page *@
 @using (Html.BeginForm())
 {
-    <br />
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
     @Html.HiddenFor(model => model.Id)
-    <div class="form-group">      
-        <label>Role name</label>
-        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+
+    <div class="row">
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <label>Role name</label>
+            @Html.TextBoxFor(model => model.Name, new { @class = "form-control"})
+        </div>
+        <div class="clearfix"></div>
+        
+        <button type="submit" style="width:10%; margin-left: 15px;" class="btn btn-success text-uppercase">Edit</button>
+
     </div>
-    <button type="submit" class="btn btn-primary text-uppercase">Save</button>
+
 }

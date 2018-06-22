@@ -1,0 +1,96 @@
+﻿@model YogaFitnessClub.Models.Branch
+ @{
+    ViewBag.Title = "Branch Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Branch Form</h2>
+<hr />
+
+@* Show error to user *@
+<div class="form-group">
+    <span style="color:red">@ViewData["Message"]</span>
+</div>
+
+@* Branch form - the data is sent to the SaveBranch method of Branches controller *@
+@using (Html.BeginForm("SaveBranch", "Branches", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <div class="row" style="margin-left: 10px;">
+        @Html.AntiForgeryToken()
+       
+        @* If the model is not null then make the below fields read only *@
+        @if (Model != null)
+        {
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                @Html.LabelFor(b => b.LocationName)
+                @Html.TextBoxFor(b => b.LocationName, new { @class = "form-control", @readonly = "readonly" })
+                @Html.ValidationMessageFor(b => b.LocationName)
+            </div>
+            <span class="clearfix"></span>
+
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                @Html.LabelFor(b => b.Address)
+                @Html.TextBoxFor(b => b.Address, new { @class = "form-control", id = "txtAddress", @readonly = "readonly" })
+                @Html.ValidationMessageFor(b => b.Address)
+            </div>
+            <span class="clearfix"></span>
+
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                @Html.LabelFor(b => b.Postcode)
+                @Html.TextBoxFor(b => b.Postcode, new { @class = "form-control", @readonly = "readonly" })
+                @Html.ValidationMessageFor(b => b.Postcode)
+            </div>
+            <span class="clearfix"></span>
+        }
+        else   //otherwise show the below fields without being disabled 
+        {
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                @Html.LabelFor(b => b.LocationName)
+                @Html.TextBoxFor(b => b.LocationName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(b => b.LocationName)
+            </div>
+            <span class="clearfix"></span>
+
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                @Html.LabelFor(b => b.Address)
+                @Html.TextBoxFor(b => b.Address, new { @class = "form-control", id = "txtAddress" })
+                @Html.ValidationMessageFor(b => b.Address)
+            </div>
+            <span class="clearfix"></span>
+
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                @Html.LabelFor(b => b.Postcode)
+                @Html.TextBoxFor(b => b.Postcode, new { @class = "form-control" })
+                @Html.ValidationMessageFor(b => b.Postcode)
+            </div>
+            <span class="clearfix"></span>
+        }
+
+      
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            @Html.LabelFor(b => b.MobileNumber)
+            @Html.TextBoxFor(b => b.MobileNumber, new { @class = "form-control" })
+            @Html.ValidationMessageFor(b => b.MobileNumber)
+        </div>
+        <span class="clearfix"></span>
+
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            @Html.LabelFor(b => b.Email)
+            @Html.TextBoxFor(b => b.Email, new { @class = "form-control" })
+            @Html.ValidationMessageFor(b => b.Email)
+        </div>
+        <span class="clearfix"></span>
+
+        @Html.HiddenFor(b => b.Id)
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <input type="submit" id="btnSubmit" class="btn btn-success" value="Save Branch" />
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

@@ -8,49 +8,56 @@ using YogaFitnessClub.Models;
 
 namespace YogaFitnessClub.Repositories
 {
+    /// <summary>
+    /// the roles interface with some methods signatures
+    /// any class that implements this interface will have to implement the methods inside the interface
+    /// </summary>
     public interface IRolesRepository
     {
-        List<SelectListItem> GetRolesDropDownList();
-        List<SelectListItem> GetUsersDropDownList(); //may change to only tutors
+        List<IdentityRole> GetRoles();
+        List<Tutor> GetUsers();
         List<string> GetExistingRoleNames();
         void CreateRole(FormCollection collection);
-        void DeleteRole(string roleName);
+        bool DeleteRole(string roleName);
         IdentityRole EditRole(string roleName);
-        void EditRole(IdentityRole role);
+        bool EditRole(IdentityRole role);
         ApplicationUser GetSelectedUser(string userName);
         UserManager<ApplicationUser> UserManger();
     }
 
-
+    /// <summary>
+    /// The roles Repository class that implements the roles interface
+    /// This repository has a direct reference to the ApplicaitonDbContext where
+    /// all the database tables can be manipulated
+    /// </summary>
     public class RolesRepository : IRolesRepository
     {
-        private  ApplicationDbContext _context;
+        private ApplicationDbContext _context;
 
         public RolesRepository()
         {
             _context = new ApplicationDbContext();
         }
-        public List<SelectListItem> GetRolesDropDownList()
+
+        //get list of identity roles
+        public List<IdentityRole> GetRoles()
         {
-            return _context.Roles
-                           .OrderBy(r => r.Name)
-                           .ToList().Select(r => new SelectListItem { Value = r.Name.ToString(), Text = r.Name })
-                           .ToList();
+            return _context.Roles.ToList();
         }
 
-        public List<SelectListItem> GetUsersDropDownList()
+        //get list of tutors
+        public List<Tutor> GetUsers()
         {
-            return _context.Users
-                           .OrderBy(u => u.UserName)
-                           .ToList().Select(u => new SelectListItem { Value = u.UserName.ToString(), Text = u.UserName })
-                           .ToList();
+            return _context.Tutors.ToList();
         }
 
+        //get list of roles
         private List<IdentityRole> GetRolesList()
         {
             return _context.Roles.ToList();
         }
 
+        //a method that gets only the role name in a list
         public List<string> GetExistingRoleNames()
         {
             List<string> roleNameList = new List<string>();
@@ -61,6 +68,7 @@ namespace YogaFitnessClub.Repositories
             return roleNameList;
         }
 
+        //create a role
         public void CreateRole(FormCollection collection)
         {
 
@@ -72,17 +80,26 @@ namespace YogaFitnessClub.Repositories
             _context.SaveChanges();
         }
 
-        public void DeleteRole(string roleName)
+        //delete a role, only if it has no users
+        public bool DeleteRole(string roleName)
         {
+            var status = false;
+
             var thisRole = _context
                            .Roles
                            .Where(r => r.Name.Equals(roleName, StringComparison.CurrentCultureIgnoreCase))
                            .FirstOrDefault();
 
-            _context.Roles.Remove(thisRole);
-            _context.SaveChanges();
+            if (!(thisRole.Users.Count > 0))
+            {
+                _context.Roles.Remove(thisRole);
+                _context.SaveChanges();
+                status = true;
+            }
+            return status;
         }
 
+        //edit a role, only if it has no users
         public IdentityRole EditRole(string roleName)
         {
             var thisRole = _context
@@ -92,12 +109,15 @@ namespace YogaFitnessClub.Repositories
             return thisRole;
         }
 
-        public void EditRole(IdentityRole role)
+        //edit role
+        public bool EditRole(IdentityRole role)
         {
             _context.Entry(role).State = System.Data.Entity.EntityState.Modified;
             _context.SaveChanges();
+            return false;
         }
 
+        //get selected user by username(email)
         public ApplicationUser GetSelectedUser(string userName)
         {
             return _context.Users
@@ -105,6 +125,7 @@ namespace YogaFitnessClub.Repositories
                            .FirstOrDefault();
         }
 
+        //a metod that allows direct access to the usermanager
         public UserManager<ApplicationUser> UserManger()
         {
             var userStore = new UserStore<ApplicationUser>(_context);
@@ -112,5 +133,5 @@ namespace YogaFitnessClub.Repositories
 
             return userManager;
         }
-    }  
+    }
 }

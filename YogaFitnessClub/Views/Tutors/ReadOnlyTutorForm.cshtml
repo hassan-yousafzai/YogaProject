@@ -1,0 +1,57 @@
+﻿@model YogaFitnessClub.Models.Tutor
+@{
+    ViewBag.Title = "Readonly Tutor Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>My Profile</h2>
+<hr />
+
+@* Show the readonly form to the tutor with data being papulated with the logged in tutor details *@
+<div class="row">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        @Html.LabelFor(t => t.Name)
+        @Html.TextBoxFor(t => t.Name, new { @class = "form-control", @readonly = "true" })
+    </div>
+    <span class="clearfix"></span>
+
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        @Html.LabelFor(t => t.Email)
+        @Html.TextBoxFor(t => t.Email, new { @class = "form-control", @readonly = "true" })
+    </div>
+    <span class="clearfix"></span>
+
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        @Html.LabelFor(t => t.Birthday)
+        @Html.TextBoxFor(t => t.Birthday, "{0:d MMM yyyy}", new { @class = "form-control", @readonly = "true" })
+    </div>
+    <span class="clearfix"></span>
+
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        @Html.LabelFor(t => t.Address)
+        @Html.TextBoxFor(t => t.Address, new { @class = "form-control", @readonly = "true" })
+    </div>
+    <span class="clearfix"></span>
+
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        @Html.LabelFor(t => t.Postcode)
+        @Html.TextBoxFor(t => t.Postcode, new { @class = "form-control", @readonly = "true" })
+    </div>
+    <span class="clearfix"></span>
+
+
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        @Html.LabelFor(t => t.NiN)
+        @Html.TextBoxFor(t => t.NiN, new { @class = "form-control", @readonly = "true" })
+    </div>
+    <span class="clearfix"></span>
+
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        @Html.LabelFor(t => t.MobileNumber)
+        @Html.TextBoxFor(t => t.MobileNumber, new { @class = "form-control", @readonly = "true" })
+    </div>
+    <span class="clearfix"></span>
+</div>
+

@@ -1,0 +1,137 @@
+﻿@model YogaFitnessClub.Models.TutorRegisterViewModel
+
+@{
+    ViewBag.Title = "Tutor Register";
+}
+
+<h2>Tutor Register</h2>
+<hr />
+
+<h4>Create a new account.</h4>
+<h5 style="color:red">This Tutor Register is only available to admins. It has been made public for marking purposes only. This feature will not be public on the live product.</h5>
+
+@* Error Message shown to user *@
+<div class="form-group">
+    <span style="color:red">
+        @ViewData["Message"]
+    </span>
+</div>
+
+@* The form is sent to the AdminRegister of Account controller. *@
+@using (Html.BeginForm("TutorRegister", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    @* the recaptcha error message is shown if the data is not null *@
+    if (TempData["recaptcha"] != null)
+    {
+        <p style="color:red">@TempData["recaptcha"]</p>
+}
+
+    @* using bootstrap grid system to display the field on the screen
+    html helper methods have been used to papulate the labels, fields and show error messages*@
+    <div class="row">
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:10px;">
+            @Html.LabelFor(m => m.Name)
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Name)
+        </div>
+        <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:10px;">
+            @Html.LabelFor(m => m.Email)
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Email)
+        </div>
+        <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:10px;">
+            @Html.LabelFor(m => m.Password)
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Password)
+        </div>
+        <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:10px;">
+            @Html.LabelFor(m => m.ConfirmPassword)
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.ConfirmPassword)
+        </div>
+        <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:10px;">
+            <label>Date of Birth</label>
+            <div class="input-group date" id="dtp">
+                <input name="Birthday" id="txtBirthday" class="form-control" onfocus="$(this).next().trigger('click')" onkeydown="event.preventDefault()" />
+                <span style="background-color: #ffffff; border-color: #fff; border-right: 2px solid #78c2ad; border-top: 2px solid #78c2ad; border-bottom: 2px solid #78c2ad;" class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            @Html.ValidationMessageFor(m => m.Birthday)
+        </div>
+        <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:10px;">
+            @Html.LabelFor(m => m.NiN)
+            @Html.TextBoxFor(m => m.NiN, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.NiN)
+        </div>
+        <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:10px;">
+            @Html.LabelFor(m => m.Address)
+            @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Address)
+        </div>
+        <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:10px;">
+            @Html.LabelFor(m => m.Postcode)
+            @Html.TextBoxFor(m => m.Postcode, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Postcode)
+        </div>
+        <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:10px;">
+            @Html.LabelFor(m => m.MobileNumber)
+            @Html.TextBoxFor(m => m.MobileNumber, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.MobileNumber)
+        </div>
+        <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:10px;">
+            <div class="g-recaptcha" data-sitekey="6LcprEMUAAAAAKT2kdfQKuhdtwGB0lsl_utdwvcS"></div>
+        </div>
+        <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:10px;">
+            <input id="btnRegister" type="submit" class="btn btn-success" value="Register" />
+        </div>
+
+    </div>
+
+}
+<link href="~/Content/bootstrap-datetimepicker.css" rel="stylesheet" />
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    @* required js files *@
+    <script src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
+
+    <script>
+        //when document is ready
+        //then configure the datetimepicker and set min and max date, also set the date format
+        $(document).ready(function () {
+            $('#dtp').datetimepicker({
+                format: 'DD/MM/YYYY',
+                maxDate: new Date(),
+                minDate: new Date('1901-01-01')
+            })
+        })
+    </script>
+}
+
+

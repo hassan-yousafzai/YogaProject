@@ -3,6 +3,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Data.Entity.ModelConfiguration;
 
 namespace YogaFitnessClub.Models
 {
@@ -18,13 +20,20 @@ namespace YogaFitnessClub.Models
         }
     }
 
+    //This the the application db context that has been used to add all the below model to the database as tables
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Customer> Customers { get; set; }
-        public DbSet<Session> Sessions { get; set; }
-        public DbSet<Activity> Activities { get; set; }
-        public DbSet<Instructor> Instructors { get; set; }
-        public DbSet<SessionScheduler> SessionScheduler { get; set; }
+        public DbSet<Class> Classes { get; set; }
+        public DbSet<Branch> Branches { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<Tutor> Tutors { get; set; }
+        public DbSet<Admin> Admins { get; set; }
+        public DbSet<TutorSkill> TutorSkills { get; set; }
+        public DbSet<Skill> Skills { get; set; }
+        public DbSet<ClassType> ClassTypes { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
+        public DbSet<ClassSkill> ClassSkills { get; set; }
 
 
         public ApplicationDbContext()
@@ -35,6 +44,27 @@ namespace YogaFitnessClub.Models
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+           //ensure that the tables are named the following 
+            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+
+            modelBuilder.Entity<Customer>().ToTable("Customers");
+            modelBuilder.Entity<Class>().ToTable("Classes");
+            modelBuilder.Entity<Branch>().ToTable("Branches");
+            modelBuilder.Entity<Room>().ToTable("Rooms");
+            modelBuilder.Entity<Tutor>().ToTable("Tutors");
+            modelBuilder.Entity<Admin>().ToTable("Admins");
+            modelBuilder.Entity<TutorSkill>().ToTable("TutorSkills");
+            modelBuilder.Entity<Skill>().ToTable("Skills");
+            modelBuilder.Entity<ClassType>().ToTable("ClassType");
+            modelBuilder.Entity<Booking>().ToTable("Bookings");
+            modelBuilder.Entity<ClassSkill>().ToTable("ClassSkills");
+
         }
     }
 }

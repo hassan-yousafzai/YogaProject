@@ -1,0 +1,59 @@
+﻿@model IEnumerable<YogaFitnessClub.Models.ClassType>
+
+@{
+    ViewBag.Title = "Class Types";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Class Types</h2>
+
+<hr />
+
+@* Error message for the user *@
+<div class="form-group">
+    <span style="color:red">@ViewData["Message"]</span>
+</div>
+
+@* a link to the classtype form *@
+@Html.ActionLink("Add Class Type", "ClassTypeForm", "ClassTypes", null, new { @class = "btn btn-success", style = "width:10%;" })
+
+<br />
+<br />
+<p style="text-align:center">Use the search field and table sorting buttons to find a class. Click on a class type to edit. </p>
+
+@* a table tha is shown to the user papulated with the data that is sent from the controller  *@
+<table id="events" class="table table-bordered table-hover table-responsive">
+    <thead>
+        <tr>
+            <th class="first_table_col" scope="col">Difficulty</th>
+            <th scope="col">Price</th>
+            <th class="last_table_col" scope="col">Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.ActionLink(item.ClassTypeName, "EditClassType", "ClassTypes", new { id = item.Id }, null)</td> @*edit form link*@
+                <td>@item.Price</td>
+                <td>
+                    @* another form that is used to delete a class type *@
+                    @using (Html.BeginForm("Delete", "ClassTypes", new { id = item.Id }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        <span onclick="return confirm('Are you sure to delete?')">
+                            <input type="submit" value="Delete" class="btn-link" />
+                        </span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#events").DataTable();
+        })
+    </script>
+}

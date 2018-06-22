@@ -9,6 +9,7 @@ using Microsoft.Owin.Security;
 using WebGrease;
 using YogaFitnessClub.Models;
 using YogaFitnessClub.Repositories;
+using YogaFitnessClub.Helper;
 
 namespace YogaFitnessClub.Controllers
 {
@@ -22,7 +23,7 @@ namespace YogaFitnessClub.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -34,9 +35,9 @@ namespace YogaFitnessClub.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -139,7 +140,7 @@ namespace YogaFitnessClub.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -151,6 +152,23 @@ namespace YogaFitnessClub.Controllers
                     ModelState.AddModelError("", "Invalid code.");
                     return View(model);
             }
+        }
+
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult ActivateUser(string id)
+        {
+            ApplicationDbContext _context = new ApplicationDbContext();
+
+            //var user = UserManager.FindById(id);
+            var user = _context.Users.Where(c => c.Id == id).SingleOrDefault();
+
+            if (user != null)
+            {
+                user.EmailConfirmed = true;
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Login");
         }
 
         //
@@ -170,49 +188,221 @@ namespace YogaFitnessClub.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                string EncodedResponse = Request.Form["g-Recaptcha-Response"];
+                bool IsCaptchaValid = (Recaptcha.Validate(EncodedResponse) == "true" ? true : false);
+
+                if (IsCaptchaValid)
                 {
+                    var check = Utility.CheckUserAge(model.Birthday);
+                    if (check == false)
+                    {
+                        ViewData["Message"] = "You are too young!";
+                        return View(model);
+                    }
 
-                    var user2 = UserManager.FindByEmail(model.Email);
-                    
-                    new CustomerRepository().SaveCustomer(
-                        new Customer()
-                        {
-                            Name = model.Name,
-                            Birthdate = model.Birthday,
-                            Address = model.Address,
-                            Postcode = model.Postcode,
-                            Email = user2.Email,
-                            UserId = user2.Id
-                        });
-                    new RolesRepository().UserManger().AddToRoles(user2.Id, "User");
+                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                    var result = await UserManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                    {
+                        var user2 = UserManager.FindByEmail(model.Email);
+                        new CustomerRepository().SaveCustomer(
+                            new Customer()
+                            {
+                                Name = model.Name,
+                                Birthdate = model.Birthday,
+                                Address = model.Address,
+                                Postcode = model.Postcode,
+                                Email = user2.Email,
+                                UserId = user2.Id
+                            });
 
-                    //  Comment the following line to prevent log in until the user is confirmed.
-                    //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+                        //THROWING EXCEPTION DUE TO NOT HAVING ANY ROLES 
+                        //FIX *BEFORE ADDING A USER CHECK IF THERE ARE ANY ROLES*
+                        new RolesRepository().UserManger().AddToRoles(user2.Id, "Customer");
 
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account");
+                        //  Comment the following line to prevent log in until the user is confirmed.
+                        //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
 
-                    // Uncomment to debug locally 
-                    // TempData["ViewBagLink"] = callbackUrl;
+                        // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                        // Send an email with this link
+                        string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account");
 
-                    ViewBag.Message = "Check your email and confirm your account, you must be confirmed "
-                                    + "before you can log in.";
+                        // Uncomment to debug locally 
+                        // TempData["ViewBagLink"] = callbackUrl;
 
-                    //ViewBag.ReSendLink = callbackUrl;
+                        ViewBag.Message = "Check your email and confirm your account, you must be confirmed "
+                                        + "before you can log in.";
 
-                    return View("Info");
-                    //return RedirectToAction("Index", "Home");
+                        // ViewBag.ReSendLink = callbackUrl;
+                        ViewBag.UserId = user.Id;
+                        return View("Info");
+                        //return RedirectToAction("Index", "Home");
+                    }
+                    ViewData["Message"] = "User already exist!";
+
+                    AddErrors(result);
                 }
-                AddErrors(result);
+                else
+                {
+                    TempData["recaptcha"] = "Please verify that you are not a robot!";
+                }
+            }
+
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        //[Authorize(Roles = "Admin")]
+        public ActionResult TutorRegister()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        //[Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> TutorRegister(TutorRegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                string EncodedResponse = Request.Form["g-Recaptcha-Response"];
+                bool IsCaptchaValid = (Recaptcha.Validate(EncodedResponse) == "true" ? true : false);
+
+                if (IsCaptchaValid)
+                {
+                    var check = Utility.CheckUserAge(model.Birthday);
+                    if (check == false)
+                    {
+                        ViewData["Message"] = "You are too young!";
+                        return View(model);
+                    }
+
+                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                    var result = await UserManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                    {
+                        var user2 = UserManager.FindByEmail(model.Email);
+
+                        new TutorRepository().SaveTutor(
+                            new Tutor()
+                            {
+                                Name = model.Name,
+                                Email = user2.Email,
+                                Birthday = model.Birthday,
+                                Address = model.Address,
+                                Postcode = model.Postcode,
+                                NiN = model.NiN,
+                                MobileNumber = model.MobileNumber,
+                                UserId = user2.Id
+                            });
+
+                        new RolesRepository().UserManger().AddToRoles(user2.Id, "Tutor");
+                        string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account");
+                        ViewBag.Message = "Check your email and confirm your account, you must be confirmed "
+                                        + "before you can log in.";
+                        ViewBag.UserId = user.Id;
+                        return View("Info");
+                    }
+                    ViewData["Message"] = "User already exist!";
+                    AddErrors(result);
+                }
+                else
+                {
+                    TempData["recaptcha"] = "Please verify that you are not a robot!";
+                }
             }
 
             // If we got this far, something failed, redisplay form
             return View(model);
         }
+
+        [AllowAnonymous]
+        //[Authorize(Roles = "Admin")]
+        public ActionResult AdminRegister()
+        {
+            return View();
+        }
+
+        // POST: /Account/Register
+        [HttpPost]
+        [AllowAnonymous]
+        //[Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AdminRegister(AdminRegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                string EncodedResponse = Request.Form["g-Recaptcha-Response"];
+                bool IsCaptchaValid = (Recaptcha.Validate(EncodedResponse) == "true" ? true : false);
+
+                if (IsCaptchaValid)
+                {
+                    var check = Utility.CheckUserAge(model.Birthday);
+                    if (check == false)
+                    {
+                        ViewData["Message"] = "You are too young!";
+                        return View(model);
+                    }
+
+                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                    var result = await UserManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                    {
+
+                        var user2 = UserManager.FindByEmail(model.Email);
+
+                        new AdminRepository().SaveAdmin(
+                            new Admin()
+                            {
+                                Name = model.Name,
+                                Email = user2.Email,
+                                Birthday = model.Birthday,
+                                Address = model.Address,
+                                Postcode = model.Postcode,
+                                NiN = model.NiN,
+                                MobileNumber = model.MobileNumber,
+                                UserId = user2.Id
+                            });
+
+                        //THROWING EXCEPTION DUE TO NOT HAVING ANY ROLES 
+                        //FIX *BEFORE ADDING A USER CHECK IF THERE ARE ANY ROLES*
+                        new RolesRepository().UserManger().AddToRoles(user2.Id, "Admin");
+
+                        //  Comment the following line to prevent log in until the user is confirmed.
+                        //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+
+                        // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                        // Send an email with this link
+                        string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account");
+
+                        // Uncomment to debug locally 
+                        // TempData["ViewBagLink"] = callbackUrl;
+
+                        ViewBag.Message = "Check your email and confirm your account, you must be confirmed "
+                                        + "before you can log in.";
+
+                        // ViewBag.ReSendLink = callbackUrl;
+                        ViewBag.UserId = user.Id;
+
+                        return View("Info");
+                        //return RedirectToAction("Index", "Home");
+                    }
+                    ViewData["Message"] = "User already exist!";
+                    AddErrors(result);
+                }
+                else
+                {
+                    TempData["recaptcha"] = "Please verify that you are not a robot!";
+                }   
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
 
         private async Task<string> SendEmailConfirmationTokenAsync(string userID, string subject)
         {
@@ -262,10 +452,10 @@ namespace YogaFitnessClub.Controllers
 
                 // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // If we got this far, something failed, redisplay form

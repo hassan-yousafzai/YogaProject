@@ -1,0 +1,78 @@
+﻿@model IEnumerable<YogaFitnessClub.Models.Booking>
+@{
+    ViewBag.Title = "My Bookings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>My Bookings</h2>
+
+<hr />
+
+@* error message shown to user *@
+<div class="form-group">
+    <span style="color:red">@ViewData["Message"]</span>
+</div>
+
+<p style="text-align:center">Use the search field and table sorting buttons to see your bookings. </p>
+
+@* a table with data from the controller, a loop is used to add data to the table *@
+<table id="events" class="table table-bordered table-hover table-responsive">
+    <thead>
+        <tr>
+            <th class="first_table_col" scope="col">BY</th>
+            <th scope="col">Date & Time</th>
+            <th scope="col">Location</th>
+            <th scope="col">Paid</th>
+            <th class="last_table_col" scope="col">Cancel</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var evt in Model)
+            {
+                <tr>
+                    <td>@evt.Class.Tutor.Name</td>
+                    <td>@evt.Class.StartDate</td>
+                    <td>
+                        @evt.Class.Room.Branch.Address, @evt.Class.Room.Branch.Postcode<br />
+                        Room: @evt.Class.Room.RoomNumber
+                    </td>
+                    @if (evt.PaidOrNot == false)
+                    {
+                        <td>No</td>
+                    }
+                    else
+                    {
+                        <td>Yes</td>
+                    }
+                    <td>
+                        @using (Html.BeginForm("CancelBooking", "Bookings", new { id = evt.Id }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                        {
+                            <span onclick="return confirm('Are you sure to cancel this booking?')">
+                                @if (evt.CanCancel == true)
+                                {
+                                    <input type="submit" value="Cancel Now" class="btn btn-success btn-lg btn-block" />
+                                }
+                                else
+                                {
+                                    <input type="submit" disabled value="Cannot Cancel" class="btn btn-warning btn-lg btn-block" />
+                                }
+                            </span>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#events").DataTable();
+        })
+    </script>
+
+}

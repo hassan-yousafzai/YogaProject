@@ -1,5 +1,3 @@
-using YogaFitnessClub.Models;
-
 namespace YogaFitnessClub.Migrations
 {
     using System;
@@ -11,7 +9,7 @@ namespace YogaFitnessClub.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = false;
         }
 
         protected override void Seed(YogaFitnessClub.Models.ApplicationDbContext context)
@@ -21,27 +19,13 @@ namespace YogaFitnessClub.Migrations
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data. E.g.
             //
-            context.Customers.AddOrUpdate(new Customer()
-            {
-                Address = "test",
-                Birthdate = new DateTime(1990, 1, 1),
-                Email = "test@test.com",
-                Id = 1,
-                Name = "Hassan",
-                Postcode = "Postcode"
-            });
-
-            context.Instructors.AddOrUpdate(new Instructor()
-            {
-                Address = "test",
-                Birthdate = new DateTime(1990, 1, 1),
-                Email = "test@test.com",
-                Id = 1,
-                Name = "Hassan",
-                Postcode = "Postcode",
-                Gender = "Male",
-                NiNumber = "NiNumber"
-            });
+            //    context.People.AddOrUpdate(
+            //      p => p.FullName,
+            //      new Person { FullName = "Andrew Peters" },
+            //      new Person { FullName = "Brice Lambson" },
+            //      new Person { FullName = "Rowan Miller" }
+            //    );
+            //
         }
     }
 }

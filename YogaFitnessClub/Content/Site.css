@@ -27,8 +27,31 @@ textarea {
     max-width: 100%;
 }
 
+.field-validation-error{
+    color: red;
+}
 
-/*.table th, .table td {
-    text-align: center;
-}*/
+.input-validation-error {
+    border: 2px solid red;
+}
 
+#events thead {
+    background-color: #bad7cf;
+    color: #000000;
+}
+
+#events .first_table_col {
+    border-top-left-radius: 10px;
+}
+
+#events .last_table_col {
+    border-top-right-radius: 10px;
+}
+
+input:disabled {
+    background-color: red;
+}
+
+.fc-event {
+    border: 15px solid red;
+}

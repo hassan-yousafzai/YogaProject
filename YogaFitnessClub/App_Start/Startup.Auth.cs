@@ -55,8 +55,8 @@ namespace YogaFitnessClub
             //   consumerSecret: "");
 
             //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
+            //   appId: "160233618004195",
+            //   appSecret: "aac560421c3e2378d3d336b42fd8fe33");
 
             //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             //{

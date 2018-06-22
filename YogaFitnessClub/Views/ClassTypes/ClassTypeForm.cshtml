@@ -1,0 +1,45 @@
+﻿@model YogaFitnessClub.Models.ClassType
+@{
+    ViewBag.Title = "ClassType Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@* the form is sent to the below method and class *@
+@using (Html.BeginForm("SaveClassType", "ClassTypes", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <div class="row">
+        <h2>Class Type Form</h2>
+        <hr />
+
+        @Html.AntiForgeryToken()
+        @* User shown error messages *@
+        <div class="form-group">
+            <span style="color:red">@ViewData["Message"]</span>
+        </div>
+
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                @Html.LabelFor(c => c.ClassTypeName)
+                @Html.TextBoxFor(c => c.ClassTypeName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(c => c.ClassTypeName)
+            </div>
+            <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            @Html.LabelFor(c => c.Price)
+            @Html.TextBoxFor(c => c.Price, new { @class = "form-control" })
+            @Html.ValidationMessageFor(c => c.Price)
+        </div>
+        <span class="clearfix"></span>       
+
+        @* id is sent as a hidden field *@
+        @Html.HiddenFor(c => c.Id)
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <input type="submit" id="btnSubmit" class="btn btn-success" value="Save Class Type" />
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,4 +1,5 @@
-﻿<div class="navbar navbar-inverse navbar-fixed-top">
+﻿@* the navigation bar of the yoga fitness club *@
+<div class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -6,29 +7,57 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            @Html.ActionLink("Yoga Fitness Club", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            @Html.ActionLink("Yoga Fitness Club", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" }) @*the home page button*@ 
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                @if (User.IsInRole("User"))
+                @* if the user is customer show the below links *@
+                @if (User.IsInRole("Customer"))
                 {
-                    <li>@Html.ActionLink("Customer Profile", "Index", "Customers")</li>
+                    <li>@Html.ActionLink("My Profile", "Index", "Customers")</li> 
+                    <li>@Html.ActionLink("Edit Profile", "CustomerForm", "Customers")</li>
+                    <li>@Html.ActionLink("Available Bookings", "AvailableBookings", "Bookings")</li>
+                    <li>@Html.ActionLink("My Bookings", "YourBookings", "Bookings")</li>
+                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+
                 }
+
+                @* if the user is Tutor show the below links *@
                 @if (User.IsInRole("Tutor"))
                 {
-                    <li>@Html.ActionLink("Instructor Profile", "Index", "Instructors")</li>
-                    <li>@Html.ActionLink("Schedule Manager", "Index", "SessionScheduler")</li>
-                }
-               
-               @if (User.IsInRole("Admin"))
-                {
-                    <li>@Html.ActionLink("Role Manager", "Index", "Roles")</li>
-                }   
-                
-                <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("My Profile", "Index", "Tutors")</li>
+                    <li>@Html.ActionLink("Edit Profile", "TutorForm", "Tutors")</li>
+                    <li>@Html.ActionLink("Schedule Manager", "Index", "Class")</li>
+                    <li>@Html.ActionLink("All Bookings", "ShowAllTutorBooking", "Tutors")</li>
+                    <li>@Html.ActionLink("Book a Customer", "BookACustomer", "Tutors")</li>
+                    <li>@Html.ActionLink("Process Payment", "LogPayment", "Tutors")</li>
 
+                }
+
+                @* if the user is Admin show the below links *@
+                 @if (User.IsInRole("Admin"))
+                 {
+                    @*<li>@Html.ActionLink("Tutor Register", "TutorRegister", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+                    <li>@Html.ActionLink("Admin Register", "AdminRegister", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>*@
+                    <li>@Html.ActionLink("Role Manager", "Index", "Roles")</li>
+                    <li>@Html.ActionLink("Branches", "Index", "Branches")</li>
+                    <li>@Html.ActionLink("Rooms", "Index", "Rooms")</li>
+                    <li>@Html.ActionLink("Skills", "Index", "Skills")</li>
+                    <li>@Html.ActionLink("Assign Skills", "TutorSkillForm", "TutorSkills")</li> 
+                    <li>@Html.ActionLink("Class Types", "Index", "ClassTypes")</li>
+                 }
+
+                @* if the user is public user show the below links *@
+                @if(!User.IsInRole("Admin") && !User.IsInRole("Customer") && !User.IsInRole("Tutor"))
+                {
+                    <li>@Html.ActionLink("Tutor Register", "TutorRegister", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li> 
+                    <li>@Html.ActionLink("Admin Register", "AdminRegister", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li> 
+                    <li>@Html.ActionLink("User Guide", "ReadMe", "Home")</li>
+
+                }
+                
             </ul>
-            @Html.Partial("_LoginPartial")
+            @Html.Partial("_LoginPartial") @*login view is showed*@ 
         </div>
     </div>
 </div>

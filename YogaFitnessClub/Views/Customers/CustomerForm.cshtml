@@ -5,49 +5,44 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Customer Form</h2>
+<h2>Edit your Profile</h2>
+<hr />
 
-@using (Html.BeginForm("SaveCustomer", "Customers"))
+@* Customer form that is sent to SaveCustomer method of Customer controller *@
+@using (Html.BeginForm("SaveCustomer", "Customers", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
-    <div class="form-group">
-        @Html.LabelFor(c => c.Name)
-        @Html.TextBoxFor(c => c.Name, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Name, null, new { @class = "text-danger" })
+    <div class="row">
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:5px;">
+            @Html.LabelFor(c => c.Name)
+            @Html.TextBoxFor(c => c.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Name, null, new { @class = "text-danger" })
+        </div>
+        <span class="clearfix"></span>
 
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:5px;">
+            @Html.LabelFor(c => c.Address)
+            @Html.TextBoxFor(c => c.Address, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Address, null, new { @class = "text-danger" })
+        </div>
+        <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:5px;">
+            @Html.LabelFor(c => c.Postcode)
+            @Html.TextBoxFor(c => c.Postcode, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Postcode, null, new { @class = "text-danger" })
+        </div>
+        <span class="clearfix"></span>
+
+        @*the below fields are sent as hidden*@
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.UserId)
+        @Html.HiddenFor(m => m.Birthdate)
+        @Html.HiddenFor(m => m.Email)
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:5px;">
+            <input type="submit" id="btnSubmit" class="btn btn-success" value="Save" />
+        </div>
     </div>
-
-    <div class="form-group">
-        @Html.LabelFor(c => c.Birthdate)
-        @Html.TextBoxFor(c => c.Birthdate, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Birthdate, null, new { @class = "text-danger" })
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(c => c.Address)
-        @Html.TextBoxFor(c => c.Address, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Address, null, new { @class = "text-danger" })
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(c => c.Postcode)
-        @Html.TextBoxFor(c => c.Postcode, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Postcode, null, new { @class = "text-danger" })
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(c => c.Email)
-        @Html.TextBoxFor(c => c.Email, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Email, null, new { @class = "text-danger" })
-    </div>
-    @*<div class="form-group">
-        @Html.LabelFor(c => c.UserId)
-        @Html.TextBoxFor(c => c.UserId, new {@readonly = "readonly", @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.UserId, null, new { @class = "text-danger" })
-    </div>*@
-
-    @Html.HiddenFor(m => m.Id)
-    @Html.HiddenFor(m => m.UserId)
-    <button type="submit" class="btn btn-primary">Save</button>
 }
 
 

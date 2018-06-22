@@ -1,0 +1,62 @@
+﻿@model IEnumerable<YogaFitnessClub.Models.Room>
+@{
+    ViewBag.Title = "Rooms";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Rooms</h2>
+
+<hr />
+@* User feedback *@
+<div class="form-group">
+    <span style="color:red">@ViewData["Message"]</span>
+</div>
+
+@* a link to rooms form *@
+@Html.ActionLink("Add Room", "RoomForm", "Rooms", null, new { @class = "btn btn-success", style = "width: 10%;" })
+
+<br />
+<br />
+<p style="text-align:center">Use the search field and table sorting buttons to find a room. Click on room number to edit. </p>
+
+@* A table that is papulated by the data that is sent from the controller  *@
+<table id="events" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th class="first_table_col" scope="col">Room Number</th>
+            <th scope="col">Capacity</th>
+            <th scope="col">Branch Name</th>
+            <th class="last_table_col" scope="col">Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>@Html.ActionLink(item.RoomNumber, "EditRoom", "Rooms", new { id = item.Id }, null)</th> @*another link to the room form for editing a room*@
+                <td>@item.Capacity</td>
+                <td>@item.Branch.LocationName</td>
+                <td>
+                    @* a form that is used to delete a room *@
+                    @using (Html.BeginForm("Delete", "Rooms", new { id = item.Id }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        <span onclick="return confirm('Are you sure to delete?')">
+                            <input type="submit" value="Delete" class="btn-link" />
+                        </span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#events").DataTable();
+        })
+
+    </script>
+}

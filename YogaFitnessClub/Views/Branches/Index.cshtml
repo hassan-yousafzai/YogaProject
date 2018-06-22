@@ -1,0 +1,73 @@
+﻿@model IEnumerable<YogaFitnessClub.Models.Branch>
+@{
+    ViewBag.Title = "Branches";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Branches</h2>
+
+<hr />
+
+@* Error shown to user *@
+<div class="form-group">
+    <span style="color:red">@ViewData["Message"]</span>
+</div>
+
+@* a link to branch form *@
+@Html.ActionLink("Add Branch", "BranchForm", "Branches", null, new { @class = "btn btn-success", style= "width: 10%;" })
+
+<br />
+<br />
+<p style="text-align:center">Use the search field and table sorting buttons to find a branch. Click on branch name to edit. </p>
+
+@* a table with data being populated from the data sent from controller and foreach loop used to populate the data into the table *@
+<table id="events" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th class="first_table_col" scope="col">Location</th>
+            <th scope="col">Address</th>
+            <th scope="col">Postcode</th>
+            <th scope="col">Contact Number</th>
+            <th scope="col">Email</th>
+            <th class="last_table_col" scope="col">Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>@Html.ActionLink(item.LocationName, "EditBranch", "Branches", new { id = item.Id }, null)</th>
+                <td>@item.Address</td>
+                <td>@item.Postcode</td>
+                @if (item.MobileNumber.ToString().StartsWith("7"))
+                {
+                    <td>@Html.Raw("0")@item.MobileNumber</td>
+                }
+                else
+                {
+                    <td>@item.MobileNumber</td>
+                }
+                <td>@item.Email</td>
+                <td> 
+                    @* another form that is sent as POST to delete method of branches controller *@
+                    @using (Html.BeginForm("Delete", "Branches", new { id = item.Id }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        @*this is the alert shown when user clicks on the delete link*@
+                        <span onclick="return confirm('Are you sure to delete?')">
+                            <input type="submit" value="Delete" class="btn-link" />
+                        </span>
+                    }
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#events").DataTable();           
+    })
+    </script>
+}

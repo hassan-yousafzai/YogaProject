@@ -1,0 +1,62 @@
+﻿@model IEnumerable<YogaFitnessClub.ViewModels.TutorBookingsViewModel>
+
+@{
+    ViewBag.Title = "Tutor Bookings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>All Bookings</h2>
+<hr />
+
+<p style="text-align:center">Use the search field and table sorting buttons to find a booking. </p>
+
+@* a table with all the bookings by the logged in tutor being papulated with  *@
+ <table id="events" class="table table-bordered table-hover table-responsive">
+    <thead>
+        <tr>
+            <th class="first_table_col" scope="col">Event Id</th>
+            <th scope="col">Title</th>
+            <th scope="col">Start</th>
+            <th scope="col">End</th>
+            <th scope="col">Location</th>
+            <th scope="col">Price</th>
+            <th scope="col">Difficulty</th>
+            <th scope="col">Available Spaces</th>
+            <th class="last_table_col" scope="col">Number of Bookings</th>
+        </tr>
+    </thead>
+    <tbody>
+        @* if the model sent to this view by the controller is not null then papulate the table *@
+        @if (Model != null)
+        {
+            foreach (var evt in Model)
+            {
+                <tr>
+                    <td>@evt.Class.Id</td>
+                    <td>@evt.Class.Title</td>
+                    <td>@evt.Class.StartDate</td>
+                    <td>@evt.Class.EndDate</td>
+                    <td>
+                        @evt.Class.Room.Branch.Address, @evt.Class.Room.Branch.Postcode<br />
+                        Room: @evt.Class.Room.RoomNumber
+                    </td>
+                    <td>@evt.Class.ClassType.Price</td>
+                    <td>@evt.Class.ClassType.ClassTypeName</td>
+                    <td>@evt.Class.AvailableSpace</td>
+                    <td>@evt.NumberOfBookings</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    <script>
+        //when document is ready add the DataTable plugin to the events id table
+        $(document).ready(function () {
+            $("#events").DataTable();
+        })
+    </script>
+
+}
+

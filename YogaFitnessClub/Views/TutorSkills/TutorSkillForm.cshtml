@@ -1,0 +1,131 @@
+﻿@{
+    ViewBag.Title = "Tutor Skill Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Assign Skills</h2>
+
+<hr />
+@* feedback for users *@
+<div class="form-group">
+    <span style="color:red">@ViewData["Message"]</span>
+</div>
+
+<h4>Add skills to Tutors.</h4>
+
+@* all the fields for the tutor skill form page.
+    the dropdown lists are papulated using jQuery*@
+<div class="row">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        <label>Select Tutor</label>
+        <select id="DDLTutor" data-live-search="true" class="form-control selectpicker">
+            <option selected disabled value="">Please Select</option>
+        </select>
+    </div>
+    <span class="clearfix"></span>
+
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        <label>Select Skill</label>
+        <select id="DDLSkill" data-live-search="true" class="form-control selectpicker">
+            <option selected disabled value="">Please Select</option>
+        </select>
+    </div>
+    <span class="clearfix"></span>
+
+    <div class="form-group col-sm-4 col-md-4 col-lg-4">
+        <input type="submit" id="btnSubmit" class="btn btn-success" value="Add Skill" />
+    </div>
+</div>
+@* the required css file for the select list of bootstrap *@
+<link href="~/Content/themes/bootstrap-select.css" rel="stylesheet" />
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @* the required js file for the dropdown list *@
+    <script src="~/Scripts/bootstrap-select.js"></script>
+
+    <script>
+        //when the document is ready
+        $(document).ready(function () {
+            //get a ref to both dropdown lists
+            var selectedSkill = document.getElementById('DDLSkill').value.trim();
+            var selectedTutor = document.getElementById('DDLTutor').value.trim();
+
+            //send an ajax request to the TutorSkills controller and GetAllSkills
+            //and then papulate the dropdown list with the data sent from the controller
+            $.ajax({
+                type: "POST",
+                url: '/TutorSkills/GetAllSkills',
+                success: function (data) {
+                    console.dir(data);
+                    $('#DDLSkill').find('option:gt(0)').remove(); //remove all elements but the first one
+                    for (var i = 0; i < data.length; i++) {
+                        $('#DDLSkill').append($('<option></option>').val(data[i].Id).text(data[i].SkillName));
+                    }
+                },
+                error: function (error) {
+                    alert('Failed to get the skills!');
+                }
+            })
+
+            //send an ajax request to the TutorSkills controller and GetAllSkills
+            //and then papulate the dropdown list with the data sent from the controller
+            $.ajax({
+                type: "POST",
+                url: '/TutorSkills/GetAllTutors',
+                success: function (data) {
+                    console.dir(data);
+                    $('#DDLTutor').find('option:gt(0)').remove(); //remove all elements but the first one
+                    for (var i = 0; i < data.length; i++) {
+                        $('#DDLTutor').append($('<option></option>').val(data[i].Id).text(data[i].Email));
+                    }
+                },
+                error: function (error) {
+                    alert('Failed to get the tutors!');
+                }
+            })
+
+            //when the user clicks on the submit button
+            //ensure that both dropdown list are papulated with something
+            $('#btnSubmit').click(function () {
+                if (document.getElementById('DDLSkill').value.trim() == "") {
+                    alert("Select a skill to add!");
+                    return;
+                }
+                else if (document.getElementById('DDLTutor').value.trim() == "") {
+                    alert("Select a tutor!");
+                    return;
+                }
+                else {
+                    //then make a data object and sent it to the controller
+                    var data = {
+                        SkillId: $("#DDLSkill").val(),
+                        TutorId: $("#DDLTutor").val()
+                    }
+                    //send the data to AddSkills method of TutorSkills controller 
+                    //show the response to the user 
+                    $.ajax({
+                        type: "POST",
+                        url: '/TutorSkills/AddSkill',
+                        data: data,
+                        success: function (data) {
+                            console.dir(data);
+                            if (data == false) {
+                                alert("This tutor has this skill!");
+                            }
+                            else {
+                                alert("Skill added to the tutor!");
+                            }
+                        },
+                        error: function (error) {
+                            alert('Failed to process the request!');
+                        }
+                    })
+                }
+            })
+
+        })
+    </script>
+}

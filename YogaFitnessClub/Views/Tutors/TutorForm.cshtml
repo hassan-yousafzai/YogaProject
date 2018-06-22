@@ -1,0 +1,66 @@
+﻿@model YogaFitnessClub.Models.Tutor
+@{
+    ViewBag.Title = "Edit Tutor Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit your Profile</h2>
+<hr />
+
+@* the form is sent to Save method of Tutors controller - the form has all the fields below - the form is sent as a POST *@
+@using (Html.BeginForm("Save", "Tutors", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <div class="row">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:4px;">
+            @Html.LabelFor(t => t.Name)
+            @Html.TextBoxFor(t => t.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(t => t.Name)
+        </div>
+        <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:4px;">
+            @Html.LabelFor(t => t.Address)
+            @Html.TextBoxFor(t => t.Address, new { @class = "form-control" })
+            @Html.ValidationMessageFor(t => t.Address)
+        </div>
+        <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:4px;">
+            @Html.LabelFor(t => t.Postcode)
+            @Html.TextBoxFor(t => t.Postcode, new { @class = "form-control" })
+            @Html.ValidationMessageFor(t => t.Postcode)
+        </div>
+        <span class="clearfix"></span>
+
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:4px;">
+            @Html.LabelFor(t => t.NiN)
+            @Html.TextBoxFor(t => t.NiN, new { @class = "form-control" })
+            @Html.ValidationMessageFor(t => t.NiN)
+        </div>
+        <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:4px;">
+            @Html.LabelFor(t => t.MobileNumber)
+            @Html.TextBoxFor(t => t.MobileNumber, new { @class = "form-control" })
+            @Html.ValidationMessageFor(t => t.MobileNumber)
+        </div>
+        <span class="clearfix"></span>
+
+        @Html.HiddenFor(t => t.Email)
+        @Html.HiddenFor(t => t.Birthday)
+        @Html.HiddenFor(t => t.UserId)
+        @Html.HiddenFor(t => t.Id)
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4" style="margin-left:4px;">
+            <input type="submit" id="btnSubmit" class="btn btn-success" value="Save" />
+        </div>
+ </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

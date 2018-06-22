@@ -1,0 +1,61 @@
+﻿@model IEnumerable<YogaFitnessClub.Models.Skill>
+
+@{
+    ViewBag.Title = "Skills";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Skills</h2>
+<hr />
+
+@* feedback for the users *@
+<div class="form-group">
+    <span style="color:red">@ViewData["Message"]</span>
+</div>
+
+@* a link to the add skills form *@
+@Html.ActionLink("Add Skill", "SkillForm", "Skills", null, new { @class = "btn btn-success", style = "width: 10%;" })
+
+<br />
+<br />
+<p style="text-align:center">Use the search field and table sorting buttons to find a skill. Click on skill name to edit. </p>
+
+@* a table that is papulated using a foreach loop, the data is sent from the controller *@
+<table id="events" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width:50%;" class="first_table_col" scope="col">Name</th>
+            <th style="width:50%;"  class="last_table_col" scope="col">Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @* a link to edit skill form *@
+                <th>@Html.ActionLink(item.SkillName, "EditSkill", "Skills", new { id = item.Id }, null)</th>
+                @*a form that is sent to the Delete method of Skills controller when the user clicks on the delete link*@
+                <td>
+                    @using (Html.BeginForm("Delete", "SKills", new { id = item.Id }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        <span onclick="return confirm('Are you sure to delete?')">
+                            <input type="submit" value="Delete" class="btn-link" />
+                        </span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+@section Scripts {  
+    <script>
+        //when document is ready use the datatable plugin on the table with the id events
+        $(document).ready(function () {
+            $("#events").DataTable();
+        })
+
+    </script>
+}

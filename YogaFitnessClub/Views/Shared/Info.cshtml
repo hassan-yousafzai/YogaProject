@@ -2,4 +2,20 @@
     ViewBag.Title = "Info";
 }
 <h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
+<hr />
+
+<h3 style="margin-left:10px">@ViewBag.Message</h3>
+
+<h3 style="color:red; margin-left: 10px;">The below Activate button is for marking purposes only. This will not be present on the live product.</h3>
+<h3 style="color:red; margin-left: 10px;">Please click the below button to Activate your dummy account.</h3>
+
+@if (ViewBag.UserId != "" || ViewBag.UserId != null)
+{
+    using (Html.BeginForm("ActivateUser", "Account", new { id = ViewBag.UserId }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <span  style="color:red;" onclick="return confirm('Are you sure to activate this account?')">            
+            <input type="submit" value="Activate Now" class="btn btn-success" style="width:10%; margin-left: 10px;" />         
+        </span>
+    }
+}

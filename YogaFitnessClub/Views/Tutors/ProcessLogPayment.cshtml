@@ -1,0 +1,107 @@
+﻿@model YogaFitnessClub.ViewModels.PaymentLogViewModel
+
+@{
+    ViewBag.Title = "Process Payment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Process Payment</h2>
+
+<hr />
+@* feedback for a user *@
+<div class="form-group">
+    <span style="color:red">@ViewData["Message"]</span>
+</div>
+
+@* a table with customer data being papulated with *@
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Customer Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Date of Birth</th>
+            <th scope="col">Address</th>
+            <th class="last_table_col" scope="col">Postcode</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            <tr>
+                <td>@Model.Customer.Name</td>
+                <td>@Model.Customer.Email</td>
+                <td>@Model.Customer.Birthdate.Value.ToShortDateString()</td>
+                <td>@Model.Customer.Address</td>
+                <td>@Model.Customer.Postcode</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p style="text-align:center">Use the search field and table sorting buttons to find booking details for a customer to pay. </p>
+
+@* a table where all bookings are shown to the tutor that a customer has booked *@
+<table id="events" class="table table-bordered table-hover table-responsive">
+    <thead>
+        <tr>
+            <th class="first_table_col" scope="col">Date Booked</th>
+            <th scope="col">Event Start</th>
+            <th scope="col">Event End</th>
+            <th scope="col">Title</th>
+            <th scope="col">Price</th>
+            <th scope="col">Location</th>
+            <th class="last_table_col" scope="col">Pay</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            //loop through the model and papulate the table
+            foreach (var evt in Model.Bookings)
+            {
+                <tr>
+                    <td>@evt.DateTime</td>
+                    <td>@evt.Class.StartDate</td>
+                    <td>@evt.Class.EndDate</td>
+                    <td>@evt.Class.Title</td>
+                    <td>£@evt.Class.ClassType.Price</td>
+                    <td>
+                        @evt.Class.Room.Branch.Address, @evt.Class.Room.Branch.Postcode<br />
+                        Room: @evt.Class.Room.RoomNumber
+                    </td>
+                    <td>
+                        @* another form that is used when paying for a booking *@
+                        @using (Html.BeginForm("ProcessingLogPayment", "Tutors", new { id = evt.Class.Id }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                        {
+                            @Html.HiddenFor(c => c.Customer.UserId)
+                            <span onclick="return confirm('Are you sure to book?')">
+                                @* If the user did not pay then show a button to pay - otherwise, disable the button and have text as Paid *@
+                                @if (evt.PaidOrNot == false)
+                                {
+                                    <input type="submit" value="Pay Now" class="btn btn-success btn-lg btn-block" />
+                                }
+                                else
+                                {
+                                    <input type="submit" disabled value="Paid" class="btn btn-success btn-lg btn-block" style="background-color: #28b62c; border-color:#28b62c"/>
+                                }
+                            </span>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+@section Scripts{
+    <script>
+        //when the document is ready 
+        //add the datatable plugin to the table with the id events
+        $(document).ready(function () {
+            $("#events").DataTable(); 
+        })
+    </script>
+
+}
+

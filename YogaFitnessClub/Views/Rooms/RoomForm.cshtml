@@ -1,0 +1,107 @@
+﻿@model YogaFitnessClub.ViewModels.RoomViewModel
+@{
+    ViewBag.Title = "Room Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Room Form</h2>
+<hr />
+@* feedback for users  *@
+<div class="form-group">
+    <span style="color:red">@ViewData["Message"]</span>
+</div>
+@* A form that is sent to the saveRoom method of rooms controller to save or edit a room *@
+@using (Html.BeginForm("SaveRoom", "Rooms", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <div class="row" style="margin-left: 10px;">
+
+        @Html.AntiForgeryToken()
+
+        @if (Model.Room != null || Model.NotEmptyModel == true)
+        {
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                @Html.LabelFor(r => r.Room.BranchId)
+                @Html.DropDownListFor(r => r.Room.BranchId, new SelectList(Model.Branches, "Id", "LocationName"), "Select Branch", new { @class = "form-control", @disabled = "disabled" })
+                @Html.ValidationMessageFor(r => r.Room.BranchId)
+                @Html.HiddenFor(r => r.Room.BranchId)
+            </div>
+            <span class="clearfix"></span>
+        }
+        else
+        {
+            <div class="form-group col-sm-4 col-md-4 col-lg-4">
+                @Html.LabelFor(r => r.Room.BranchId)
+               <select id="branches" name="Room.BranchId" class="form-control selectpicker">
+                    <option selected disabled value="">Please Select</option>
+                </select>
+                @Html.ValidationMessageFor(r => r.Room.BranchId)
+            </div>
+            <span class="clearfix"></span>
+        }
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            @Html.LabelFor(r => r.Room.RoomNumber)
+            @Html.TextBoxFor(r => r.Room.RoomNumber, new { @class = "form-control" })
+            @Html.ValidationMessageFor(r => r.Room.RoomNumber)
+        </div>
+        <span class="clearfix"></span>
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            @Html.LabelFor(r => r.Room.Capacity)
+            @Html.TextBoxFor(r => r.Room.Capacity, new { @class = "form-control", id = "txtAddress" })
+            @Html.ValidationMessageFor(r => r.Room.Capacity)
+        </div>
+        <span class="clearfix"></span>
+
+        @Html.HiddenFor(r => r.Room.Id)
+
+        <div class="form-group col-sm-4 col-md-4 col-lg-4">
+            <input type="submit" id="btnSubmit" class="btn btn-success" value="Save Room" />
+        </div>
+
+    </div>
+
+    <link href="~/Content/themes/bootstrap-select.css" rel="stylesheet" />
+
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/bootstrap-select.js"></script>
+    <script>
+        //when document is ready 
+        //send an ajax request to Branches -> FetchBracnhes methods to get all the branches and then papulate the dropdown list
+        $(document).ready(function () {
+            $.ajax({
+                type: "POST",
+                url: '/Branches/FetchBranches',
+                success: function (data) {
+                    console.dir(data)
+                    for (var i = 0; i < data.length; i++) {
+                        $("#branches").append('<option value="' + data[i].Id + '">' + data[i].LocationName + '</option>');
+                    }
+                    $("#branches").selectpicker("refresh");
+                },
+                error: function () {
+                    alert('Failed to get branches');
+                }
+            })
+
+            //when user clicks on submit ensure the branches field is not not empty
+            $('#btnSubmit').click(function () {
+                if (document.getElementById('branches').value.trim() == "") {
+                    alert("Select a branch!");
+                    return false;
+                }            
+            })
+
+        });
+    </script>
+
+}
+
+
+
+
+
+
